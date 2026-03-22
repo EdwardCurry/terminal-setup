@@ -1,6 +1,6 @@
 #!/bin/zsh
 # ─── terminal-setup: Zsh config ─────────────────────────────────────
-# Powered by: Starship + zsh-autosuggestions + zsh-syntax-highlighting + fzf
+# Powered by: Starship + zsh-autosuggestions + zsh-syntax-highlighting + fzf + fnm
 
 # ─── Homebrew ────────────────────────────────────────────────────────
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
@@ -55,20 +55,8 @@ fi
 # ─── Zoxide (smart cd) ──────────────────────────────────────────────
 eval "$(zoxide init zsh)"
 
-# ─── NVM (lazy load for fast startup) ────────────────────────────────
-export NVM_DIR="$HOME/.nvm"
-# Pre-add current node version to PATH (instant node/npm/npx without waiting for nvm init)
-if [[ -d "$NVM_DIR/versions/node" ]]; then
-    NODE_LATEST=$(ls -v "$NVM_DIR/versions/node" 2>/dev/null | tail -1)
-    [[ -n "$NODE_LATEST" ]] && export PATH="$NVM_DIR/versions/node/$NODE_LATEST/bin:$PATH"
-fi
-# Lazy-load nvm on first call
-function nvm() {
-    unfunction nvm 2>/dev/null
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    nvm "$@"
-}
+# ─── fnm (Node version manager) ─────────────────────────────────────
+eval "$(fnm env --use-on-cd --shell zsh)"
 
 # ─── Aliases ─────────────────────────────────────────────────────────
 alias ls='eza --icons --group-directories-first'

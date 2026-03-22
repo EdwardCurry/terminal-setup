@@ -4,6 +4,7 @@
 #
 # Stack: Ghostty + (Fish or Zsh) + Starship + Nerd Font (MesloLGS)
 # Tools: bat, eza, fd, ripgrep, btop, zoxide, jq, tldr, delta, lazygit, fzf
+# Node:  fnm (Fast Node Manager) — works with both Fish and Zsh
 # Theme: Catppuccin Mocha (Starship)
 #
 # Usage:
@@ -219,36 +220,27 @@ else
     success "Starship already installed"
 fi
 
-# ─── Step 7: Node.js ────────────────────────────────────────────────
+# ─── Step 7: fnm + Node.js ──────────────────────────────────────────
 echo ""
 echo -e "${BOLD}══════════════════════════════════════════${NC}"
-echo -e "${BOLD}  🟢 Step 7/8: Node.js${NC}"
+echo -e "${BOLD}  🟢 Step 7/8: fnm + Node.js${NC}"
 echo -e "${BOLD}══════════════════════════════════════════${NC}"
 
-if [[ "$SHELL_CHOICE" == "fish" ]]; then
-    info "Node.js will be managed via nvm.fish (installed in Step 8)"
+if ! command -v fnm &>/dev/null; then
+    info "Installing fnm (Fast Node Manager)..."
+    brew install fnm
+    success "fnm installed"
 else
-    # Install nvm for zsh
-    export NVM_DIR="$HOME/.nvm"
-    if [[ ! -d "$NVM_DIR" ]]; then
-        info "Installing nvm..."
-        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-        success "nvm installed"
-    else
-        success "nvm already installed"
-    fi
-
-    # Load nvm and install LTS
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    if command -v nvm &>/dev/null; then
-        info "Installing Node LTS..."
-        nvm install --lts
-        nvm alias default lts/*
-        success "Node LTS installed and set as default"
-    else
-        warn "nvm loaded but command not available, install Node manually: nvm install --lts"
-    fi
+    success "fnm already installed"
 fi
+
+# Load fnm in current shell so we can install Node
+eval "$(fnm env --use-on-cd --shell bash)"
+
+info "Installing Node LTS..."
+fnm install --lts
+fnm default lts-latest
+success "Node LTS installed and set as default"
 
 # ─── Step 8: Config Files ───────────────────────────────────────────
 echo ""
@@ -288,29 +280,6 @@ if [[ "$SHELL_CHOICE" == "fish" ]]; then
     cp "$CONFIGS_DIR/config.fish" "$FISH_CONFIG_DIR/config.fish"
     success "Fish config deployed"
 
-    # Fisher + plugins
-    info "Installing Fisher and plugins..."
-    fish -c '
-        if not functions -q fisher
-            curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
-            fisher install jorgebucaran/fisher
-        end
-        fisher install jorgebucaran/nvm.fish
-    ' 2>/dev/null
-    success "Fisher + nvm.fish installed"
-
-    # Install Node LTS via nvm.fish
-    info "Installing Node LTS via nvm.fish..."
-    fish -c '
-        nvm install lts
-        set --universal nvm_default_version (nvm current)
-    ' 2>/dev/null
-    success "Node LTS installed and set as default"
-
-    # Fish plugins file
-    cp "$CONFIGS_DIR/fish_plugins" "$FISH_CONFIG_DIR/fish_plugins"
-    success "Fish plugins list deployed"
-
     # Fish abbreviations
     info "Setting up Fish abbreviations..."
     fish -c '
@@ -326,7 +295,7 @@ if [[ "$SHELL_CHOICE" == "fish" ]]; then
     '
     success "Fish abbreviations set"
 
-    # Zoxide init for fish
+    # Zoxide + fzf init for fish
     if ! grep -qF "zoxide" "$FISH_CONFIG_DIR/config.fish" 2>/dev/null; then
         info "Adding zoxide + fzf init to fish config..."
         cat >> "$FISH_CONFIG_DIR/config.fish" << 'FISHEOF'
@@ -379,15 +348,14 @@ echo -e "  ${BOLD}Your terminal stack:${NC}"
 echo -e "    👻 Ghostty              — terminal emulator"
 if [[ "$SHELL_CHOICE" == "fish" ]]; then
     echo -e "    🐟 Fish                 — shell"
-    echo -e "    🟢 nvm.fish             — Node version manager"
 else
     echo -e "    🐚 Zsh                  — shell (POSIX-compatible)"
     echo -e "    ✨ zsh-autosuggestions   — fish-like suggestions"
     echo -e "    🎨 zsh-syntax-highlight — fish-like highlighting"
-    echo -e "    🟢 nvm                  — Node version manager"
 fi
 echo -e "    🚀 Starship             — prompt (Catppuccin Mocha)"
 echo -e "    🔤 MesloLGS NF          — nerd font"
+echo -e "    🟢 fnm                  — Node version manager (fast!)"
 echo -e "    📦 bat eza fd rg        — modern coreutils"
 echo -e "    📊 btop                 — system monitor"
 echo -e "    🔀 lazygit + delta      — git tools"
@@ -396,10 +364,7 @@ echo -e "    🔍 fzf                  — fuzzy finder"
 echo ""
 echo -e "  ${YELLOW}Next steps:${NC}"
 echo -e "    1. Restart your terminal (or open ${BOLD}Ghostty${NC})"
-if [[ "$SHELL_CHOICE" == "fish" ]]; then
-    echo -e "    2. Node is ready! Run: ${BOLD}node --version${NC}"
-else
-    echo -e "    2. Node is ready! Run: ${BOLD}node --version${NC}"
-    echo -e "    3. Try: ${BOLD}Ctrl+R${NC} (fzf history) / ${BOLD}Ctrl+T${NC} (fzf files) / ${BOLD}Alt+C${NC} (fzf dirs)"
-fi
+echo -e "    2. Node is ready: ${BOLD}node --version${NC}"
+echo -e "    3. Pin a project: ${BOLD}echo 22 > .node-version${NC} (fnm auto-switches)"
+echo -e "    4. Try: ${BOLD}Ctrl+R${NC} (fzf history) / ${BOLD}Ctrl+T${NC} (fzf files)"
 echo ""

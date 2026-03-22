@@ -4,13 +4,14 @@ end
 
 fish_add_path /opt/homebrew/bin
 
-# set nvm path
-set --global nvm_data ~/.nvm
-
+# Starship prompt
 source (/opt/homebrew/bin/starship init fish --print-full-init | psub)
 
+# fnm (Node version manager)
+fnm env --use-on-cd --shell fish | source
+
 # pnpm
-set -gx PNPM_HOME "/Users/$USER/Library/pnpm"
+set -gx PNPM_HOME "$HOME/Library/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end

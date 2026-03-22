@@ -17,7 +17,7 @@ One-script macOS terminal environment setup. Run on a fresh Mac, get a fully con
 | **POSIX** | ❌ Own syntax | ✅ Compatible |
 | **Autosuggestions** | ✅ Built-in | ✅ via plugin |
 | **Syntax Highlighting** | ✅ Built-in | ✅ via plugin |
-| **Node Manager** | nvm.fish (Fisher) | nvm (official) |
+| **Node Manager** | fnm (shared) | fnm (shared) |
 | **Config** | `~/.config/fish/config.fish` | `~/.zshrc` |
 | **Best for** | Clean defaults, no fuss | Scripting, POSIX compat |
 
@@ -40,7 +40,7 @@ One-script macOS terminal environment setup. Run on a fresh Mac, get a fully con
 | **tldr** | Simplified man pages |
 | **delta** | Better git diffs |
 | **lazygit** | Git TUI |
-| **nvm** / **nvm.fish** | Node version manager |
+| **fnm** | Fast Node Manager (Rust, works with both shells) |
 
 ## Quick Start
 
@@ -70,8 +70,20 @@ bash <(curl -fsSL https://raw.githubusercontent.com/lewislulu/terminal-setup/mai
 4. Installs your **shell** of choice + plugins
 5. Installs all **CLI tools** via brew (including fzf)
 6. Installs **Starship** prompt with Catppuccin Mocha config
-7. Installs **Node.js** LTS (nvm for Zsh / nvm.fish for Fish)
+7. Installs **fnm** + **Node.js** LTS (same manager for both shells)
 8. Deploys all config files (with backups of existing ones)
+
+## fnm (Node Version Manager)
+
+fnm is a fast, Rust-based Node version manager that works with both Fish and Zsh.
+
+```bash
+fnm install 22          # Install Node 22
+fnm install --lts       # Install latest LTS
+fnm default 22          # Set default version
+fnm use 22              # Switch in current shell
+echo "22" > .node-version  # Auto-switch when entering this directory
+```
 
 ## Aliases / Abbreviations
 
