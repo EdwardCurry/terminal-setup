@@ -23,7 +23,7 @@ One-script macOS terminal environment setup. Run on a fresh Mac, get a fully con
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" width="600" alt="Demo">
+  <img src="assets/demo-2x.gif" width="600" alt="Demo">
 </p>
 
 ## Quick Start

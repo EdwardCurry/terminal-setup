@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.gif" width="600" alt="Demo">
+  <img src="assets/demo-2x.gif" width="600" alt="Demo">
 </p>
 
 ## 快速开始
